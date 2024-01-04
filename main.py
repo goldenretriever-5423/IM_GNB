@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     ####################
     Num_Seeds = 5
-    Num_Runs = 5
-    Budget = 100
+    Num_Runs = 1 # episode (single campaign or multiple campaign)
+    Budget = 500
     L = 1
     # seeds = list(set([np.random.randint(1000) for _ in np.arange(Num_Seeds + 10)]))[:Num_Seeds]
     # dataset_list = ['twitter','weibo']
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     for data in dataset_list:
 
         if data == 'twitter':
-            b = twitter_IM(Num_Seeds=Num_Seeds, Budget=Budget)
+            b = twitter_IM(Num_Seeds=Num_Seeds, Budget=Budget, Num_Runs=Num_Runs)
         if data == 'weibo':
             #TODO load weibo data
             continue
@@ -156,4 +156,7 @@ if __name__ == '__main__':
             rewards_df = rewards_df.append(reward_df)
 
         rewards_df.to_pickle("gnb_" + str(L) + ".pkl")
+
+        # "gnb" + str(L) + "_" + str(Num_Seeds) + "seeds_round" + str(Budget) + "_single.csv"
+        # "gnb" + str(L) + "_" + str(Num_Seeds) + "seeds_round" + str(Budget) + "_single"
 
