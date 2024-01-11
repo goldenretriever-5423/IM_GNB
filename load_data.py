@@ -19,12 +19,12 @@ import scipy.cluster.hierarchy as hcluster
 import time
 
 class twitter_IM:
-    def __init__(self, Num_Seeds=5, Budget=100, Num_Runs=5):
+    def __init__(self, Num_Seeds=5, Budget=100, Num_Runs=5, Num_cluster=50):
 
         os.chdir('/Users/yuting/PycharmProjects/bandit/IM/data_processing/')
 
-        self.num_user = 50 # cluster number
-        self.tweets = pd.read_csv("6_date_sorted_influencer_10context_data_clustered.csv", delimiter=";")
+        self.num_user = Num_cluster # cluster number
+        self.tweets = pd.read_csv("6_date_sorted_influencer_10context_data_"+str(Num_cluster)+"clustered.csv", delimiter=";")
         with open('influencer_embedding.pkl','rb') as f_emb:
             influencer_emb = pickle.load(f_emb)
         self.INFLUENCERS = [int(i) for i in list(influencer_emb.keys())]

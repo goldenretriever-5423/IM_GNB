@@ -28,10 +28,11 @@ if __name__ == '__main__':
     device = torch.device(dev)
 
     ####################
-    Num_Seeds = 5
-    Num_Runs = 1 # episode (single campaign or multiple campaign)
-    Budget = 500
-    L = 1
+    Num_Seeds = 10 # ->NRUNS
+    Num_Runs = 1 # T episode (single campaign or multiple campaign)
+    Num_cluster = 20
+    Budget = 500 # H hirizon
+    L = 3
     # seeds = list(set([np.random.randint(1000) for _ in np.arange(Num_Seeds + 10)]))[:Num_Seeds]
     # dataset_list = ['twitter','weibo']
     dataset_list = ['twitter']
@@ -41,7 +42,7 @@ if __name__ == '__main__':
     for data in dataset_list:
 
         if data == 'twitter':
-            b = twitter_IM(Num_Seeds=Num_Seeds, Budget=Budget, Num_Runs=Num_Runs)
+            b = twitter_IM(Num_Seeds=Num_Seeds, Budget=Budget, Num_Runs=Num_Runs, Num_cluster=Num_cluster)
         if data == 'weibo':
             #TODO load weibo data
             continue
@@ -126,20 +127,19 @@ if __name__ == '__main__':
 
                     # -------------------------------------------------------------------------------------
                     # update model
-
-                    # Create additional samples for exploration network -----------------------------
-                    # Add artificial exploration info when made false predictions
-                    if reward == 0 and args.arti_explore_constant > 0:
-                        for arm in arm_select:
+                    for arm in arm_select:
+                        # Update model when made false prediction ---------------------------------------------------------
+                        if reward == 0:
                             for u in np.arange(b.num_user):
-                                model.update_artificial_explore_info(t, u, arm, whole_gradients)
-                                model.update_info(u_selected=u, a_selected=arm, contexts=np.hstack((b.influencer_emb,np.tile(context.reshape(1,-1), (10,1)))), reward=0,
+                                # Create additional samples for exploration network -----------------------------
+                                # Add artificial exploration info when made false predictions
+                                if args.arti_explore_constant > 0:
+                                    model.update_artificial_explore_info(t, u, arm, whole_gradients)
+                                model.update_info(u_selected=u, a_selected=arm, contexts=np.hstack((b.influencer_emb, np.tile(context.reshape(1, -1), (10, 1)))), reward=0,
                                                   GNN_gradient=whole_gradients[arm],
                                                   GNN_residual_reward=-point_est[arm][u])
-
-                    # Update model when made right prediction ---------------------------------------------------------
-                    else:
-                        for arm in arm_select:
+                        # Update model when made right prediction ---------------------------------------------------------
+                        else:
                             for u in acts_grouped:# TODO update on distinctive activations
                                 GNN_residual_reward = 1 / len(arm_select) - point_est[arm][u]
                                 model.update_info(u_selected=u, a_selected=arm, contexts=np.hstack((b.influencer_emb,np.tile(context.reshape(1,-1), (10,1)))), reward=1/len(arm_select),
@@ -155,7 +155,7 @@ if __name__ == '__main__':
             reward_df = utlis.orgniaze_reward(activations_hist,all_activations_hist, seed,Budget,p_i)
             rewards_df = rewards_df.append(reward_df)
 
-        rewards_df.to_pickle("gnb_" + str(L) + ".pkl")
+        # rewards_df.to_pickle("gnb_" + str(L) + ".pkl")
 
         # "gnb" + str(L) + "_" + str(Num_Seeds) + "seeds_round" + str(Budget) + "_single.csv"
         # "gnb" + str(L) + "_" + str(Num_Seeds) + "seeds_round" + str(Budget) + "_single"
