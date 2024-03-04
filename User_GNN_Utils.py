@@ -22,18 +22,7 @@ def get_sym_norm_matrix(source, k):
 
 # ===========================================================
 def get_sym_norm_matrix_torch(adj, k):
-    # print(adj.size())
-    # if len(adj.size()) == 4:
-    #     new_r = torch.zeros(adj.size()).type_as(adj)
-    #     for i in range(adj.size(1)):
-    #         adj_item = adj[0, i]
-    #         rowsum = adj_item.sum(1)
-    #         d_inv_sqrt = rowsum.pow_(-0.5)
-    #         d_inv_sqrt[torch.isnan(d_inv_sqrt)] = 0
-    #         d_mat_inv_sqrt = torch.diag(d_inv_sqrt)
-    #         r = torch.matmul(torch.matmul(d_mat_inv_sqrt, adj_item), d_mat_inv_sqrt)
-    #         new_r[0, i, ...] = r
-    #     return new_r
+
     rowsum = adj.sum(1)
     d_inv_sqrt = rowsum.pow_(-0.5)
     # d_inv_sqrt[torch.isnan(d_inv_sqrt)] = 0

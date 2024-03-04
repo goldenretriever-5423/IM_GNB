@@ -1,6 +1,12 @@
+import pickle
+
 import numpy as np
 import sys
 import pandas as pd
+
+def load_pkl(pkl_name):
+    with open(pkl_name, 'rb') as f:
+        return pickle.load(f)
 
 def invertible(S):
     return np.linalg.cond(S) < 1 / sys.float_info.epsilon

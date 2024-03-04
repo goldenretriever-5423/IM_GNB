@@ -6,7 +6,7 @@ from collections import defaultdict
 
 class User_GNN_Bandit_Per_Arm:
     def __init__(self, dim, user_n, arm_n, k=1, GNN_lr=0.0001, user_lr=0.0001, hidden=100, bw_reward=10, bw_conf_b=10,
-                 user_side=0, batch_size=-1, GNN_pooling_step_size=500, user_pooling_step_size=500,
+                 batch_size=-1, GNN_pooling_step_size=500, user_pooling_step_size=500,
                  arti_explore_constant=0.01, num_layer=-1, explore_param=1,
                  neighborhood_size=-1, train_every_user_model=False, separate_explore_GNN=False,
                  last_layer_gradient_flag=False,
@@ -32,9 +32,6 @@ class User_GNN_Bandit_Per_Arm:
         print("Num Layer: ", num_layer)
         print("Explore Param: ", self.explore_param)
         print("Explore hidden size: ", self.model_explore_hidden)
-
-        # For the MNIST data set
-        self.user_side = user_side
 
         self.bw_reward = bw_reward
         self.bw_conf_b = bw_conf_b

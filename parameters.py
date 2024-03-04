@@ -14,9 +14,9 @@ def get_GNB_parameters(dataset):
         parser.add_argument('--bw_conf_b', default=5, type=float, help='Kernel bandwidth for exploration GNN')
         parser.add_argument('--k', default=1, type=int, help='k-th user neighborhood over user graphs')
         parser.add_argument('--batch_size', default=-1, type=int, help='Batch size for training')
-        parser.add_argument('--GNN_pool_step_size', default=20000, type=int, help='Step size for GNN gradient pooling')
-        parser.add_argument('--user_pool_step_size', default=4000, type=int, help='Step size for user gradient pooling')
-        parser.add_argument('--arti_explore_constant', default=0.1, type=float, help='Artificial exploration constant')
+        parser.add_argument('--GNN_pool_step_size', default=10000, type=int, help='Step size for GNN gradient pooling')
+        parser.add_argument('--user_pool_step_size', default=1000, type=int, help='Step size for user gradient pooling')
+        parser.add_argument('--arti_explore_constant', default=0.01, type=float, help='Artificial exploration constant')
         parser.add_argument('--train_every_user_model', default=True, type=bool, help='Train every user model')
         parser.add_argument('--explore_param', default=1, type=float, help='Exploration parameter')
         #

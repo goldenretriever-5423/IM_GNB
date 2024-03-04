@@ -5,33 +5,6 @@ import torch.nn.init as init
 import math
 
 
-# def batch_index_select(vectors, indices):
-#     """
-#     Gathers (batched) vectors according to indices.
-#     Arguments:
-#         vectors: Tensor[N, L, D]
-#         indices: Tensor[N, K] or Tensor[N]
-#     Returns:
-#         Tensor[N, K, D] or Tensor[N, D]
-#     """
-#     N, L, D = vectors.shape
-#     squeeze = False
-#     if indices.ndim == 1:
-#         squeeze = True
-#         indices = indices.unsqueeze(-1)
-#     N2, K = indices.shape
-#     assert N == N2
-#     indices = einops.repeat(indices, "N K -> N K D", D=D)
-#     out = torch.gather(vectors, dim=1, index=indices)
-#     if squeeze:
-#         out = out.squeeze(1)
-#     return out
-
-
-# =====================================================================================================================
-# =====================================================================================================================
-# =====================================================================================================================
-
 # CUDA_VISIBLE_DEVICES=1
 class Aggr_module(nn.Module):
     def __init__(self, A, input_dim, embed_dim):
@@ -46,12 +19,6 @@ class Aggr_module(nn.Module):
         self.fc_1 = nn.Linear(input_dim, embed_dim, bias=False)
         self.act = nn.ReLU()
 
-        # Additional linear transformation after ReLU
-        # if dual_layer:
-        #     self.fc_2 = nn.Linear(embed_dim, embed_dim, bias=False)
-
-        # for m in self.modules():
-        #     self.weights_init(m)
 
     def weights_init(self, m):
         # Xavier initialization
@@ -597,61 +564,3 @@ class Exploration_GNN:
 
             if batch_loss / time_length <= 1e-3:
                 return batch_loss / time_length
-
-
-# =====================================================================================================================
-# class Network_decision_maker(nn.Module):
-#     def __init__(self, dim, hidden_size=100):
-#         super(Network_decision_maker, self).__init__()
-#         self.fc1 = nn.Linear(dim, hidden_size)
-#         self.activate = nn.ReLU()
-#         self.fc2 = nn.Linear(hidden_size, 1)
-#
-#     def forward(self, x):
-#         x_1 = self.activate(self.activate(self.fc1(x)))
-#         return self.fc2(x_1)
-#
-#
-# class Decision_Maker:
-#     def __init__(self, dim=2, hidden=20, lr=0.01):
-#         self.func = Network_decision_maker(dim, hidden_size=hidden).to(device)
-#         self.context_list = []
-#         self.reward = []
-#         self.loss = nn.BCEWithLogitsLoss()
-#         self.lr = lr
-#
-#     def update(self, context, reward):
-#         self.context_list.append(torch.from_numpy(context.reshape(1, -1)).float())
-#         self.reward.append(reward)
-#
-#     def select(self, context):
-#         tensor = torch.from_numpy(context).float().to(device)
-#         ress = self.func(tensor).cpu()
-#         res = ress.detach().numpy()
-#         return np.argmax(res)
-#
-#     def train(self, t):
-#         optimizer = optim.SGD(self.func.parameters(), lr=self.lr)
-#         length = len(self.reward)
-#         index = np.arange(length)
-#         np.random.shuffle(index)
-#         cnt = 0
-#         tot_loss = 0
-#         while True:
-#             batch_loss = 0
-#             for idx in index:
-#                 c = self.context_list[idx]
-#                 r = self.reward[idx]
-#                 target = torch.tensor([r]).unsqueeze(1).to(device)
-#                 output = self.func(c.to(device))
-#                 loss = (output - r) ** 2
-#                 optimizer.zero_grad()
-#                 loss.backward()
-#                 optimizer.step()
-#                 batch_loss += loss.item()
-#                 tot_loss += loss.item()
-#                 cnt += 1
-#                 if cnt >= 1000:
-#                     return tot_loss / cnt
-#             if batch_loss / length <= 1e-3:
-#                 return batch_loss / length
